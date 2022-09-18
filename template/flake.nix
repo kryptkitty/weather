@@ -2,7 +2,7 @@
 
 {
   # EDIT: package/flake description to be shared
-  description = "use the weather flake";
+  description = "use the @PACKAGE@ flake";
 
   # EDIT: set desired nixpkgs release to track
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05";
@@ -17,16 +17,16 @@
 
         # EDIT: bring in all the packages we're exposing
         packages = {
-          weather = pkgs.callPackage ./weather.nix { inherit pkgs; };
+          @PACKAGE@ = pkgs.callPackage ./@PACKAGE@.nix { inherit pkgs; };
         };
 
         # EDIT: set the default package when running the flake as `nix run repo#`
-        defaultPackage = packages.weather;
+        defaultPackage = packages.@PACKAGE@;
       in { inherit packages defaultPackage; }
     ))
       // { templates.default = {
 	  path = ./template;
-	  description = "make your own executable weather (or other shell script) flake";
+	  description = "make your own @PACKAGE@ flake";
 	  welcomeText = ''
 	    Your new flake is ready to be initialized.
 
