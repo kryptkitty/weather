@@ -8,16 +8,27 @@
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = ({ self, nixpkgs, flake-utils }:
+  # EDIT: remove or modify this sample of using a script combining other flakes
+  #       the string below contains newlines to defeat the automated templating
+  #       and do not need to be preserved in a new flake.  \h = h, \k = k
+  inputs.upstreamWeatherFlake.url = "github:kryptkitty/weather";
+
+  outputs = ({ self, nixpkgs, flake-utils, upstreamWeatherFlake }:
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system;
 	  config.allowUnfree = true;  # EDIT: allow unfree packages?
-	}; 
+	};
+        upstreamWeatherPackage = upstreamWeatherFlake.outputs.packages."${system}"."weather";
 
         # EDIT: bring in all the packages we're exposing
         packages = {
           @PACKAGE@ = pkgs.callPackage ./@PACKAGE@.nix { inherit pkgs; };
+          
+	  # EDIT: remove or modify this sample of using a script combining other flakes
+	  upstreamWeather = pkgs.callPackage ./other-flake-example.nix {
+	    inherit pkgs upstreamWeatherPackage;
+	  };
         };
 
         # EDIT: set the default package when running the flake as `nix run repo#`
@@ -26,7 +37,7 @@
     ))
       // { templates.default = {
 	  path = ./template;
-	  description = "make your own @PACKAGE@ flake";
+	  description = "make your own executable @PACKAGE@ (or other shell script) flake";
 	  welcomeText = ''
 	    Your new flake is ready to be initialized.
 

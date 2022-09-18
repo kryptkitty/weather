@@ -6,9 +6,9 @@
   AUTHOR_AUTO="$(git config --get user.name)"
   REPO_AUTO="$PWD"
 
-  read -erp "$(printf "%30s: " "project name [$PROJNAME_AUTO]")" PROJNAME_IN
-  read -erp "$(printf "%30s: " "author [$AUTHOR_AUTO]")" AUTHOR_IN
-  read -erp "$(printf "%30s: " "github org [enter to use local paths]")" GITHUB_ORG_IN
+  read -erp "$(printf "%44s: " "project name [$PROJNAME_AUTO]")" PROJNAME_IN
+  read -erp "$(printf "%44s: " "author [$AUTHOR_AUTO]")" AUTHOR_IN
+  read -erp "$(printf "%44s: " "github org [enter to use local paths]")" GITHUB_ORG_IN
 
   PROJNAME="$PROJNAME_AUTO"
   [ x"$PROJNAME_IN" != x ] && PROJNAME="$PROJNAME_IN"

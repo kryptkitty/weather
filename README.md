@@ -20,22 +20,28 @@ or
 nix run github:kryptkitty/weather#weather
 ```
 
-or, if you don't have nix and don't know if you want it yet, here's a docker command that will do the same
+or, if you don't have nix and don't know if you want it yet, here's a docker
+command that will do the same
 
 ```bash
-docker run -ti nixos/nix nix run github:kryptkitty/weather# --extra-experimental-features nix-command --extra-experimental-features flakes
+docker run -ti nixos/nix \
+    nix run github:kryptkitty/weather# \
+        --extra-experimental-features nix-command \
+	--extra-experimental-features flakes
 ```
 
 ## Template
 
-To make a new flake based off of this one, use nix flake init with this flake as the template:
+To make a new flake based off of this one, use nix flake init with this flake
+as the template:
 
 ```bash
 nix flake init -t github:kryptkitty/weather
 ```
 
-Then follow the directions!  You will be asked to run a setup script which will initialize the
-flake's template data.  This will be described in the template's welcomeText so give it a whirl.
+Then follow the directions!  You will be asked to run a setup script which
+will initialize the flake's template data.  This will be described in the
+template's welcomeText so give it a whirl.
 
 ### Template Maintenance
 
@@ -55,12 +61,16 @@ than to the example weather flake.
 #### `*.template` overrides
 
 This class of file is special because it will override its unadorned sibling.
-This can be seen in `README.md` which has a sibling `README.md.template` to use
-instead of the template flake's `README.md` which you are reading now.
+This can be seen in `README.md` which has a sibling `README.md.template` to
+use instead of the template flake's `README.md` which you are reading now.
 
 Any file may be used this way but the file to override must exist next to the
 `.template` version.  If there is no base file, the template file will not be
 found.
+
+Using a symlink to make the .template file point to the base file will make a
+file which is unchanged by the @VARIABLE@ step but which also tracks the base
+file automatically.
 
 #### `init-template.sh` generation
 
@@ -83,9 +93,10 @@ NOTE: in this section, `.` is the folder that holds `.git` for
 
 2) run `update-template.sh`
   * take changes from the described places and bundle them up in template
-  * convert constants such as the author's name into `@VARIABLES@` in all files
-    within `./template/`.  This is used, for example, to create the copyright line
-    in `./template/LICENSE` out of the same copyright line in `./LICENSE`
+  * convert constants such as the author's name into `@VARIABLES@` in all
+    files within `./template/`.  This is used, for example, to create the
+    copyright line in `./template/LICENSE` out of the same copyright line in
+    `./LICENSE`
 
 3) run `git add .`
   * this step is a must because of how flakes work.
@@ -103,13 +114,33 @@ NOTE: in this section, `.` is the folder that holds `.git` for
       # follow prompts
       nix run .#
       ```
-  * Remember to spot check the files.  This is easily done at this stage (git it?  staged commit pun) using git:
+  * Remember to spot check the files.  This is easily done at this stage (git
+    it?  staged commit pun) using git:
     * ```bash
       git diff --cached
       ```
 
 5) commit and push
   * there is currently no formal release process for this project.
+
+## Input Flake Composition Sample
+
+This repo contains a sample of wrapping an input flake (or flakes) with a
+shell script which is used to compose them into customized behavior.  The
+script uses python to sleep and communicate to also give an example of mixing
+the composition of the input flake with a nixpkgs package.
+
+It is recommended to template the repo to create an upstreamWeather package in
+a new flake which does _not_ contain weather.  It may also be viewed in the
+weather repo for a more exotic sample of loading the upstream in the flake
+with the local copy and being able to use both at the same time.
+
+The example is in `other-flake-example.nix` and `flake.nix` to a lesser
+degree.  Instances of krypt\kitty and weat\her are noncanonical
+representations of the same strings without a backslash.  This is used only to
+defeat the templater in these instances because these are string literals
+which must be passed unchanged to the fully instantiated flake based on the
+template of this repo.
 
 
 [EnableFlakes]: https://nixos.wiki/wiki/Flakes#Enable_flakes

@@ -21,15 +21,17 @@ find . \
       cat "$FILE".template > template/"$FILE"
     else
       cat "$FILE" | sed -E -e '
-          s/James Andariese/@AUTHOR@/g
+          s#James Andariese#@AUTHOR@#g
           s#github:kryptkitty/weather#@REPO@#g
-          s/weather/@PACKAGE@/g
+          s#weather#@PACKAGE@#g
+	  s#weat[\]her#weather#g
+	  s#krypt[\]kitty#kryptkitty#g
         ' > template/"$FILE"
     fi
   fi
 done
 mv template/"weather.nix" template/@PACKAGE@.nix
-rm template/flake.lock
+[ -f template/flake.lock ] && rm template/flake.lock
 
 echo '#!/usr/bin/env nix-shell
 #! nix-shell -p findutils -p gnused -p git -i bash
@@ -39,9 +41,9 @@ echo '#!/usr/bin/env nix-shell
   AUTHOR_AUTO="$(git config --get user.name)"
   REPO_AUTO="$PWD"
 
-  read -erp "$(printf "%30s: " "project name [$PROJNAME_AUTO]")" PROJNAME_IN
-  read -erp "$(printf "%30s: " "author [$AUTHOR_AUTO]")" AUTHOR_IN
-  read -erp "$(printf "%30s: " "github org [enter to use local paths]")" GITHUB_ORG_IN
+  read -erp "$(printf "%44s: " "project name [$PROJNAME_AUTO]")" PROJNAME_IN
+  read -erp "$(printf "%44s: " "author [$AUTHOR_AUTO]")" AUTHOR_IN
+  read -erp "$(printf "%44s: " "github org [enter to use local paths]")" GITHUB_ORG_IN
 
   PROJNAME="$PROJNAME_AUTO"
   [ x"$PROJNAME_IN" != x ] && PROJNAME="$PROJNAME_IN"
